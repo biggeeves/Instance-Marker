@@ -1,0 +1,41 @@
+{
+    "name": "Version Logos",
+
+    "namespace": "DCC\\Version_logos",
+
+    "description": "Different Logos for Different REDCap instances",
+
+    "authors": [
+        {
+            "name": "Greg Neils",
+            "email": "gn2003@cumc.columbia.edu",
+            "institution": "Columbia University"
+        }
+    ],
+
+    "permissions": [
+        "redcap_project_home_page",
+	"redcap_control_center",
+        "redcap_every_page_top"
+    ],
+
+    "system-settings": [
+        {
+            "key": "vname1",
+            "name": "11. Instance URL",
+            "required": false,
+            "type": "text",
+            "repeatable": false
+        },
+        {
+            "key": "vurl1",
+            "name": "1b. REDCap Logo URL ",
+            "required": false,
+            "type": "text",
+            "repeatable": false
+        }
+    ],
+    
+    "project-settings": [
+    ]
+}
