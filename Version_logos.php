@@ -14,18 +14,20 @@ use ExternalModules\ExternalModules;
 
 /**
  * Description of Version Logos
- *
+ * 
  * @author Greg
  */
 class Version_logos extends \ExternalModules\AbstractExternalModule {
 
-    private $logo_url;
     private $logo_selector;
     private $logo_size;
     private $logo_size_name;
+    private $offset_left;
+    private $offset_top;
     private $instance;
     private $instance_url;
     private $selected;
+    private $other_text;
 
     public function init() {
         $this->set_instance_url();
@@ -42,6 +44,14 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
         $this->instance_url['backup'] = AbstractExternalModule::getSystemSetting('backup_url');
         $this->instance_url['staging'] = AbstractExternalModule::getSystemSetting('staging_url');
         $this->instance_url['other'] = AbstractExternalModule::getSystemSetting('other_url');
+        $this->other_text = AbstractExternalModule::getSystemSetting('other_text');
+        if (($this->other_text === '') || (is_null($this->other_text))) {
+            $this->other_text = 'Other';
+        }
+    }
+
+    public function clean_other_text($other_text) {
+        return htmlspecialchars(strip_tags($other_text));
     }
 
     public function set_logo_size() {
@@ -56,10 +66,14 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
 
         if ($this->logo_size === 'small') {
             $this->logo_size_name = '120x36';
-            $this->logo_selector = "a.navbar-brand img";
+            $this->logo_selector = "a.navbar-brand";
+            $this->offset_top = "34";
+            $this->offset_left = "28";
         } else if ($this->logo_size === 'medium') {
             $this->logo_size_name = '150x45';
-            $this->logo_selector = "#project-menu-logo a img";
+            $this->logo_selector = "#project-menu-logo a";
+            $this->offset_top = "34";
+            $this->offset_left = "200";
         } else {
             // Do not change logo!
             $this->logo_size_name = '150x45';
@@ -69,17 +83,16 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
 
     private function select_instance() {
         $this->selected = 0;
-        $path = $this->getUrl('img/', false, false);
 
         foreach ($this->instance_url as $key => $value) {
-           /*  echo 'Key: ' . $key . 
-                    ' Value: ' . $value . 
-                    ' Root: ' . APP_PATH_WEBROOT_FULL . 
-                    'Strpos: ' . !strpos($value, APP_PATH_WEBROOT_FULL) . PHP_EOL; */
             if (strpos($value, APP_PATH_WEBROOT_FULL) !== false) {
                 $this->instance = $key;
-                $this->logo_url = $path . $key . '_' . $this->logo_size_name . '.gif';
                 $this->selected = 1;
+                if ($key === 'other') {
+                    $this->display_text = $this->other_text;
+                } else {
+                    $this->display_text = $key;
+                }
                 break;
             }
         }
@@ -93,20 +106,26 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
     }
 
     public function construct_js() {
+        $display = '<div class=\"instance-type\" style=\"position:absolute;' .
+                'top:' . $this->offset_top . 'px; ' .
+                'left:' . $this->offset_left . 'px;' .
+                'color:red;' . 'font-weight:bold;' . 
+                'z-index:9000;' . '\">' .
+                $this->display_text .
+                '</div>';
 
         $this->js = '<script>' .
                 '$(document).ready(function(){' .
-                '  $(document).prop("title", "REDCap-'. $this->instance . '");' .
-                '  $("' . $this->logo_selector . '")' .
-                '.attr("src","' . $this->logo_url . '");' .
-                'console.log("' . $this->selected . '");' .
-                'console.log("' . $this->instance . '");' .
-                'console.log("' . $this->logo_size . '");' .
-                'console.log("' . $this->logo_url . '");' .
-                'console.log("' . $this->logo_selector . '");' .
-                'console.log("Page: ' . PAGE . '");' .
+                '  old_title = $("title").text(); ' .
+                '  new_title = old_title.replace("REDCap ","REDCap-' . $this->display_text . '")  ; ' .
+                '  display_text = "' . $display . '";' .
+                '  $(document).prop("title", new_title);' .
+                '  $("body")' .
+                '.prepend(display_text);' .
                 '});' .
                 '</script>';
+//                '  $("' . $this->logo_selector . '").first()' .
+//                '.append(display_text);' .
     }
 
 }
