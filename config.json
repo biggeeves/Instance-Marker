@@ -3,7 +3,7 @@
 
     "namespace": "DCC\\Version_logos",
 
-    "description": "Different Logos for Different REDCap instances",
+    "description": "A single location may have multiple versions of REDCap installed.  For example a developer may have a localhost version, there may be a nightly backup version, there may be a testing or developement version.  Specify a URL for each version of REDCap.  Text will be displayed below the REDCap logo if the URLs match.  For example: Development will be displayed under the REDCap logo when the URL http://localhost/ is specified for the development URL.",
 
     "authors": [
         {
@@ -56,7 +56,7 @@
         },
         {
             "key": "other_text",
-            "name": "Display Text",
+            "name": "Custom Text to display for 'Other URL'",
             "required": false,
             "type": "text"
         }

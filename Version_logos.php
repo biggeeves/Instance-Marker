@@ -65,19 +65,15 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
         }
 
         if ($this->logo_size === 'small') {
-            $this->logo_size_name = '120x36';
             $this->logo_selector = "a.navbar-brand";
             $this->offset_top = "34";
             $this->offset_left = "28";
         } else if ($this->logo_size === 'medium') {
-            $this->logo_size_name = '150x45';
             $this->logo_selector = "#project-menu-logo a";
-            $this->offset_top = "34";
-            $this->offset_left = "200";
+            $this->offset_top = "42";
+            $this->offset_left = "64";
         } else {
-            // Do not change logo!
-            $this->logo_size_name = '150x45';
-            $this->logo_selector = "#dont change";
+            // Do not change logo
         }
     }
 
@@ -110,7 +106,8 @@ class Version_logos extends \ExternalModules\AbstractExternalModule {
                 'top:' . $this->offset_top . 'px; ' .
                 'left:' . $this->offset_left . 'px;' .
                 'color:red;' . 'font-weight:bold;' . 
-                'z-index:9000;' . '\">' .
+                'font-style:italic;' . 
+                'z-index:1040;' . '\">' .
                 $this->display_text .
                 '</div>';
 
