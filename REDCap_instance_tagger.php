@@ -31,6 +31,7 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
     private $offset_top;
     private $instance;
     private $instance_url;
+    private $instance_color;
     private $selected;
     private $other_text;
 
@@ -38,10 +39,11 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         $this->set_instance_url();
         $this->set_logo_size();
         $this->select_instance();
+        $this->instance_color();
         $this->construct_js();
     }
 
-    public function set_instance_url() {
+    private function set_instance_url() {
 
         $this->instance_url['localhost'] = AbstractExternalModule::getSystemSetting('localhost_url');
         $this->instance_url['development'] = AbstractExternalModule::getSystemSetting('development_url');
@@ -55,14 +57,16 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         }
     }
 
-    public function clean_other_text($other_text) {
+    private function clean_other_text($other_text) {
         return htmlspecialchars(strip_tags($other_text));
     }
 
-    public function set_logo_size() {
+    private function set_logo_size() {
         $this->logo_size = 'medium';
+        
         switch (PAGE) {
             case "redcap/index.php":
+            case "index.php":
             case "ControlCenter/index.php":
             case "redcap/external_modules/manager/control_center.php":
                 $this->logo_size = 'small';
@@ -71,12 +75,12 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
 
         if ($this->logo_size === 'small') {
             $this->logo_selector = "a.navbar-brand";
-            $this->offset_top = "34";
-            $this->offset_left = "28";
-        } else if ($this->logo_size === 'medium') {
-            $this->logo_selector = "#project-menu-logo a";
             $this->offset_top = "42";
             $this->offset_left = "64";
+        } else if ($this->logo_size === 'medium') {
+            $this->logo_selector = "#project-menu-logo a";
+            $this->offset_top = "36";
+            $this->offset_left = "18";
         } else {
             // Do not change logo
         }
@@ -84,19 +88,21 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     private function select_instance() {
         $this->selected = 0;
-
         foreach ($this->instance_url as $key => $value) {
-            if (strpos($value, APP_PATH_WEBROOT_FULL) !== false) {
+//            echo $key . " - Value: " . $value . " - strpos:" .
+//            strpos(APP_PATH_WEBROOT_FULL, $value) . " x <br>";
+            if (strpos(APP_PATH_WEBROOT_FULL, $value) !== false) {
+
                 $this->instance = $key;
+                $this->display_text = $key;
                 $this->selected = 1;
                 if ($key === 'other') {
                     $this->display_text = $this->other_text;
-                } else {
-                    $this->display_text = $key;
                 }
                 break;
             }
         }
+       
     }
 
     public function redcap_every_page_top($project_id) {
@@ -106,28 +112,50 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         }
     }
 
-    public function construct_js() {
-        $display = '<div class=\"instance-type\" style=\"position:absolute;' .
+    private function instance_color() {
+        $this->instance_color = '#000000';
+        switch ($this->instance) {
+            case 'localhost':
+                $this->instance_color = '#449d44';  // Green
+                break;
+            case 'development':
+                $this->instance_color = '#286090';  // Blue
+                break;
+            case 'testing':
+                $this->instance_color = '#835C3B';  // Brown
+                break;
+            case 'backup':
+                $this->instance_color = '#DD3236';  // Redish
+                break;
+            case 'staging':
+                $this->instance_color = '#BA9215'; //  Goldish
+                break;
+            case 'other':
+                $this->instance_color = '#f0ad4e'; // Orange
+                break;
+        }
+    }
+
+    private function construct_js() {
+        $display = '<div class=\"instance-type\" style=\"position:fixed;' .
                 'top:' . $this->offset_top . 'px; ' .
                 'left:' . $this->offset_left . 'px;' .
-                'color:red;' . 'font-weight:bold;' . 
-                'font-style:italic;' . 
+                'color:' . $this->instance_color . ';' . 'font-weight:bold;' .
+                'font-style:italic;' .
                 'z-index:1040;' . '\">' .
                 $this->display_text .
                 '</div>';
 
         $this->js = '<script>' .
-                '$(document).ready(function(){' .
-                '  old_title = $("title").text(); ' .
-                '  new_title = old_title.replace("REDCap ","REDCap-' . $this->display_text . '")  ; ' .
-                '  display_text = "' . $display . '";' .
-                '  $(document).prop("title", new_title);' .
-                '  $("body")' .
-                '.prepend(display_text);' .
-                '});' .
+                '$(document).ready(function(){' . PHP_EOL . 
+                '  old_title = $("title").text(); ' .  PHP_EOL . 
+                '  new_title = old_title.replace("REDCap ","REDCap-' . $this->display_text . '")  ; ' . PHP_EOL . 
+                '  display_text = "' . $display . '";' .  PHP_EOL . 
+                '  $(document).prop("title", new_title);' .  PHP_EOL . 
+                '  $("body")' . PHP_EOL . 
+                '.prepend(display_text);' . PHP_EOL . 
+                '});' . PHP_EOL . 
                 '</script>';
-//                '  $("' . $this->logo_selector . '").first()' .
-//                '.append(display_text);' .
     }
 
 }
