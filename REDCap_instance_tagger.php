@@ -7,17 +7,22 @@
  * Time: 12:04 PM
  */
 
-namespace DCC\Version_logos;
+namespace DCC\REDCap_instance_tagger;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
 /**
- * Description of Version Logos
+ * Description of Instance Tags
+ * Multiple instances of the same REDCap may be used. 
+ * Example Instances: production, a backup and developer
+ * If each instance is differentiate by a unique URL
+ * This plug in will display text by the REDCap logo
+ * indicating which instance of REDCap it is.
  * 
  * @author Greg
  */
-class Version_logos extends \ExternalModules\AbstractExternalModule {
+class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     private $logo_selector;
     private $logo_size;
