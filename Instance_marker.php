@@ -24,7 +24,7 @@ use ExternalModules\ExternalModules;
  * Note: The live/production instance of REDCap should remain unmarked.
  * 
  */
-class Instance_tagger extends \ExternalModules\AbstractExternalModule {
+class Instance_marker extends \ExternalModules\AbstractExternalModule {
 
     private $logo_selector;
     private $logo_size;
