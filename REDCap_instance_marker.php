@@ -7,7 +7,7 @@
  * Time: 12:04 PM
  */
 
-namespace DCC\REDCap_instance_tagger;
+namespace DCC\REDCap_instance_marker;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;

@@ -1,7 +1,7 @@
 {
-    "name": "REDCap Instance Tagger",
+    "name": "REDCap Instance Marker",
 
-    "namespace": "DCC\\REDCap_instance_tagger",
+    "namespace": "DCC\\REDCap_instance_marker",
 
     "description": "Mark instances of REDCap with specific text indicating the specific instance. Example: If a single site has 3 instnaces of REDCap: production, backup and development. Enter in a portion of the URL that uniquely indicates which instance goes to that URL and text will be displayed by the REDCap logo indicating that particular instance of REDCap.  For example if the development instance is at http://dev-redcap then 'Development' is displayed below the REDCap logo and 'D: ' is prefixed to the tab title. A custom 'Other' URL is available and custom text will be displayed.",
 
