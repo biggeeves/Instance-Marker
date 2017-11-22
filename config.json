@@ -3,7 +3,7 @@
 
     "namespace": "DCC\\REDCap_instance_tagger",
 
-    "description": "Multiple instances of the same REDCap may be used. Example Instances: production, a backup and developer. When each instance is differentiate by a unique URL this unique text is displayed by the REDCap logo indicating which instance of REDCap it is.",
+    "description": "Multiple instances of the REDCap may in use and each one needs to be clearly marked. Example Instances: production, a backup and developer. Enter in a portion of the URL that uniquely indicates which instance goes to that URL and text will be displayed by the REDCap logo indicating that particular instance of REDCap.  If an instance type is not listed there is an Other and space to fill in what should be displayed when the Other URL is used.",
 
     "authors": [
         {
