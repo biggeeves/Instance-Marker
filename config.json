@@ -1,9 +1,9 @@
 {
-    "name": "REDCap Instance Marker",
+    "name": "Instance marker",
 
-    "namespace": "DCC\\REDCap_instance_marker",
+    "namespace": "DCC\\Instance_marker",
 
-    "description": "Multiple instances of the REDCap may in use and each one needs to be clearly marked. Example Instances: production, a backup and developer. Enter in a portion of the URL that uniquely indicates which instance goes to that URL and text will be displayed by the REDCap logo indicating that particular instance of REDCap.  If an instance type is not listed there is an Other and space to fill in what should be displayed when the Other URL is used.",
+    "description": "A single site may have multiple instances of REDCap that need to be clearly marked. Examples include Production, Backup and Development. By pattern matching the URL to the instance a small bit of matching text will be displyaed below the REDCap logo. The tab title is also prefixed with the instance type.",
 
     "authors": [
         {
