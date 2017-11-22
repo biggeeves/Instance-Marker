@@ -7,23 +7,24 @@
  * Time: 12:04 PM
  */
 
-namespace DCC\REDCap_instance_marker;
+namespace DCC\Instance_marker;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
 /**
  * Description of Instance Tags
- * Multiple instances of the same REDCap may be used. 
- * Example Instances: production, a backup and developer
- * If each instance is differentiate by a unique URL
- * this external module displays text by the REDCap logo
- * indicating the specific instance of REDCap based on the URL.
+ * Multiple instances of REDCap may be in use. 
+ * Examples: Production, Backup, Development instances
+ * Instances differentiated by a unique URL
+ * will have the instance marked by the REDCap logo
+ * indicating the specific instance based on the URL.
+ * The tab title is modified by prepending the first letter of the instance type.
  * 
  * Note: The live/production instance of REDCap should remain unmarked.
  * 
  */
-class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
+class Instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     private $logo_selector;
     private $logo_size;
