@@ -17,10 +17,11 @@ use ExternalModules\ExternalModules;
  * Multiple instances of the same REDCap may be used. 
  * Example Instances: production, a backup and developer
  * If each instance is differentiate by a unique URL
- * This plug in will display text by the REDCap logo
- * indicating which instance of REDCap it is.
+ * this external module displays text by the REDCap logo
+ * indicating the specific instance of REDCap based on the URL.
  * 
- * @author Greg
+ * Note: The live/production instance of REDCap should remain unmarked.
+ * 
  */
 class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
 
@@ -61,6 +62,11 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         return htmlspecialchars(strip_tags($other_text));
     }
 
+    /*
+     * REDCap logos vary in size depending on the page
+     * Sets the logo size and coordinates of the text
+     */
+    
     private function set_logo_size() {
         $this->logo_size = 'medium';
         
@@ -86,15 +92,19 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         }
     }
 
+/*
+ * The instance is based on mathcing a portion of the Base URL.
+ * Sets the instance type, display text and other text as applicable
+ * Sets selected if the URL is matched.
+ */
+
     private function select_instance() {
         $this->selected = 0;
         foreach ($this->instance_url as $key => $value) {
-//            echo $key . " - Value: " . $value . " - strpos:" .
-//            strpos(APP_PATH_WEBROOT_FULL, $value) . " x <br>";
             if (strpos(APP_PATH_WEBROOT_FULL, $value) !== false) {
 
                 $this->instance = $key;
-                $this->display_text = $key;
+                $this->display_text = ucfirst($key);
                 $this->selected = 1;
                 if ($key === 'other') {
                     $this->display_text = $this->other_text;
@@ -105,6 +115,9 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
        
     }
 
+    /* 
+     * Add the javascript to the top of every REDCap page
+     */
     public function redcap_every_page_top($project_id) {
         $this->init();
         if ($this->selected === 1) {
@@ -112,6 +125,10 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         }
     }
 
+    /*
+     * Instances are also indicated by color.
+     * Sets specific color based on instance
+     */
     private function instance_color() {
         $this->instance_color = '#000000';
         switch ($this->instance) {
@@ -136,6 +153,9 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         }
     }
 
+    /*
+     * Constructs the javascript that will run at the top of every page
+     */
     private function construct_js() {
         $display = '<div class=\"instance-type\" style=\"position:fixed;' .
                 'top:' . $this->offset_top . 'px; ' .
@@ -149,7 +169,7 @@ class REDCap_instance_tagger extends \ExternalModules\AbstractExternalModule {
         $this->js = '<script>' .
                 '$(document).ready(function(){' . PHP_EOL . 
                 '  old_title = $("title").text(); ' .  PHP_EOL . 
-                '  new_title = old_title.replace("REDCap ","REDCap-' . $this->display_text . '")  ; ' . PHP_EOL . 
+                '  new_title = "' . $this->display_text . '".substring(0, 1) + "-" + old_title; ' . PHP_EOL . 
                 '  display_text = "' . $display . '";' .  PHP_EOL . 
                 '  $(document).prop("title", new_title);' .  PHP_EOL . 
                 '  $("body")' . PHP_EOL . 
