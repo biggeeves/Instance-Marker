@@ -3,7 +3,7 @@
 
     "namespace": "DCC\\Instance_marker",
 
-    "description": "Mark instances of REDCap with specific text indicating the specific instance. Example: If a single site has 3 instnaces of REDCap: production, backup and development. Enter in a portion of the URL that uniquely indicates which instance goes to that URL and text will be displayed by the REDCap logo indicating that particular instance of REDCap.  For example if the development instance is at http://dev-redcap then 'Development' is displayed below the REDCap logo and 'D: ' is prefixed to the tab title. A custom 'Other' URL is available and custom text will be displayed.",
+    "description": "Multiple instances of the REDCap may in use and each one needs to be clearly marked. Example Instances: production, a backup and developer. Enter in a portion of the URL that uniquely indicates which instance goes to that URL and text will be displayed by the REDCap logo indicating that particular instance of REDCap.  If an instance type is not listed there is an Other and space to fill in what should be displayed when the Other URL is used.",
 
     "authors": [
         {
@@ -20,37 +20,37 @@
     "system-settings": [
         {
             "key": "localhost_url",
-            "name": "Localhost URL (displayed in green)",
+            "name": "Localhost URL",
             "required": false,
             "type": "text"
         },
         {
             "key": "development_url",
-            "name": "Development URL (displayed in blue)",
+            "name": "Development URL",
             "required": false,
             "type": "text"
         },
         {
             "key": "testing_url",
-            "name": "Testing URL (displayed in brown)",
+            "name": "Testing URL",
             "required": false,
             "type": "text"
         },
         {
             "key": "backup_url",
-            "name": "Backup URL (displayed in red)",
+            "name": "Backup URL",
             "required": false,
             "type": "text"
         },
         {
             "key": "staging_url",
-            "name": "Staging URL (displayed in gold)",
+            "name": "Staging URL",
             "required": false,
             "type": "text"
         },
         {
             "key": "other_url",
-            "name": "Other URL (displayed in orange)",
+            "name": "Other URL",
             "required": false,
             "type": "text"
         },
