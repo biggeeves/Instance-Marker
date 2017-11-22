@@ -14,12 +14,11 @@ use ExternalModules\ExternalModules;
 
 /**
  * Description of Instance Tags
- * Multiple instances of REDCap may be in use. 
- * Examples: Production, Backup, Development instances
- * Instances differentiated by a unique URL
- * will have the instance marked by the REDCap logo
- * indicating the specific instance based on the URL.
- * The tab title is modified by prepending the first letter of the instance type.
+ * Multiple instances of the same REDCap may be used. 
+ * Example Instances: production, a backup and developer
+ * If each instance is differentiate by a unique URL
+ * this external module displays text by the REDCap logo
+ * indicating the specific instance of REDCap based on the URL.
  * 
  * Note: The live/production instance of REDCap should remain unmarked.
  */
