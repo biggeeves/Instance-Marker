@@ -35,12 +35,15 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
     private $instance_color;
     private $selected;
     private $other_text;
+    private $debug_js;
 
     public function init() {
+
         $this->set_instance_url();
         $this->set_logo_size();
         $this->select_instance();
         $this->instance_color();
+        $this->set_debug_js();
         $this->construct_js();
     }
 
@@ -53,6 +56,7 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
         $this->instance_url['staging'] = AbstractExternalModule::getSystemSetting('staging_url');
         $this->instance_url['other'] = AbstractExternalModule::getSystemSetting('other_url');
         $this->other_text = AbstractExternalModule::getSystemSetting('other_text');
+        $this->other_text = htmlspecialchars(strip_tags($this->other_text));
         if (($this->other_text === '') || (is_null($this->other_text))) {
             $this->other_text = 'Other';
         }
@@ -68,27 +72,40 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
      */
 
     private function set_logo_size() {
-        $this->logo_size = 'medium';
-
+        $this->logo_size = 'small';
         switch (PAGE) {
             case "redcap/index.php":
             case "index.php":
-            case "ControlCenter/index.php":
             case "redcap/external_modules/manager/control_center.php":
-                $this->logo_size = 'small';
+            case "ProjectSetup/index.php":
+            case "Calendar/index.php":
+            case "DataExport/index.php":
+            case "Logging/index.php":
+            case "DataQuality/field_comment_log.php":
+            case "UserRights/index.php":
+            case "DataAccessGroups/index.php":
+            case "Locking/locking_customization.php":
+            case "Locking/esign_locking_management.php":
+            case "DataQuality/index.php":
+            case "API/project_api.php":
+            case "API/playground.php":
+            case "MobileApp/index.php":
+            case "ExternalModules/manager/project.php":
+            case "redcap8.0.2/redcap_v8.0.2/ExternalModules/manager/project.php":
+                $this->logo_size = 'medium';
                 break;
         }
 
         if ($this->logo_size === 'small') {
-            $this->logo_selector = "a.navbar-brand";
-            $this->offset_top = "42";
-            $this->offset_left = "64";
-        } else if ($this->logo_size === 'medium') {
             $this->logo_selector = "#project-menu-logo a";
             $this->offset_top = "36";
             $this->offset_left = "18";
+        } else if ($this->logo_size === 'medium') {
+            $this->logo_selector = "a.navbar-brand";
+            $this->offset_top = "42";
+            $this->offset_left = "64";
         } else {
-            // Do not change logo
+// Do not change logo
         }
     }
 
@@ -118,6 +135,10 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
         $this->init();
         if ($this->selected === 1) {
             echo $this->js;
+            echo $this->css;
+        }
+        if ($this->get_debug_mode() == 1) {
+            echo $this->debug_js;
         }
     }
 
@@ -154,25 +175,65 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
      * Add the javascript to the top of every REDCap page
      */
 
+    public function set_debug_mode($mode) {
+        $this->debug_mode = $mode;
+    }
+
+    public function get_debug_mode() {
+        return $this->debug_mode;
+    }
+
     private function construct_js() {
-        $display = '<div class=\"instance-type\" style=\"position:fixed;' .
+//                'right:' . $this->offset_left . 'px;' .
                 'top:' . $this->offset_top . 'px; ' .
-                'left:' . $this->offset_left . 'px;' .
-                'color:' . $this->instance_color . ';' . 'font-weight:bold;' .
+        $css_styles = '.instance-type {' .
+                'position:fixed;' .
+                'top: 36px; ' .
+                'right: 10px;' .
+                'background-color:' . $this->instance_color . ';' . 'font-weight:bold;' .
                 'font-style:italic;' .
-                'z-index:1040;' . '\">' .
+                'z-index:1040;' .
+                'color: white;' .
+    'border-radius: 2px;' .
+    'padding: 5px;' .
+                '}';
+//        if ($this->logo_size === 'medium') {
+//            $css_styles .= '@media screen and (max-width: 767px) {' .
+//                    '.instance-type{top:36px; left:18px;}' .
+//                    '}';
+//        }
+
+        $style_sheet = '<style type="text/css">' . $css_styles . '</style>';
+
+        $display = '<div class=\"instance-type\">' .
                 $this->display_text .
                 '</div>';
 
         $this->js = '<script>' .
-                '$(document).ready(function(){' . PHP_EOL . 
-                '  old_title = $("title").text(); ' .  PHP_EOL . 
-                '  new_title = "' . $this->display_text . '".substring(0, 1) + "-" + old_title; ' . PHP_EOL . 
-                '  display_text = "' . $display . '";' .  PHP_EOL . 
-                '  $(document).prop("title", new_title);' .  PHP_EOL . 
-                '  $("body")' . PHP_EOL . 
-                '.prepend(display_text);' . PHP_EOL . 
-                '});' . PHP_EOL . 
+                '$(document).ready(function(){' . PHP_EOL .
+                '  $(\'' . $style_sheet . '\').appendTo("head");' . PHP_EOL .
+                '  old_title = $("title").text(); ' . PHP_EOL .
+                '  new_title = "' . $this->display_text . '".substring(0, 1) + "-" + old_title; ' . PHP_EOL .
+                '  text_div = "' . $display . '";' . PHP_EOL .
+                '  $(document).prop("title", new_title);' . PHP_EOL .
+                '  $("body")' . PHP_EOL .
+                '.prepend(text_div);' . PHP_EOL .
+                '});' . PHP_EOL .
+                '</script>';
+    }
+
+    private function set_debug_js() {
+        $this->debug_js = '<script>' .
+                '$(document).ready(function(){' . PHP_EOL .
+                'console.log("Instance Marker ran"); ' .
+                'console.log("' . 'top:' . $this->offset_top . 'px; ' . '"); ' .
+                'console.log("' . 'left:' . $this->offset_left . 'px;' . '"); ' .
+                'console.log("' . 'color:' . $this->instance_color . '"); ' .
+                'console.log("' . 'text:' . $this->display_text . '"); ' .
+                'h = $("img[alt=\'REDCap\']").height();' .
+                'w = $("img[alt=\'REDCap\']").width();' .
+                'console.log("Height: " + h + " Width: " + w); ' .                
+                '});' . PHP_EOL .
                 '</script>';
     }
 

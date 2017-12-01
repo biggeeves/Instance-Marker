@@ -1,7 +1,5 @@
-## Version Logos - Display different logos for different version of REDCap.
+<h2>Instance Marker - Display information about which instance of REDCap is being used.<h2>
 
-### What is Version Logos? (Looking for a better name)
+A single site may have multiple instances of REDCap that need to be clearly marked. Examples include Production, Backup and Development. By pattern matching the URL to the instance a small bit of matching text will be displayed in the top right corner of every page. Also, the tab title is prefixed with the first letter of the instance type. The module must be enabled on all projects by default in order for the instance label to appear inside projects or must be enabled on a project by project basis.
 
-A single location may have multiple versions of REDCap installed.  For example a developer may have a localhost version, there may be a nightly backup version, there may be a testing or developement version.  Specify a URL for each version of REDCap.  Text will be displayed below the REDCap logo if the URLs match.  For example: Development will be displayed under the REDCap logo when the URL http://localhost/ is specified for the development URL.
-
-### Usage
+The goal is to easily identify which instance of REDCap you are currently in.
