@@ -36,6 +36,7 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
     private $selected;
     private $other_text;
     private $debug_js;
+    private $debug_mode = false;
 
     public function init() {
 
