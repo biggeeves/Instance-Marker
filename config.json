@@ -14,7 +14,7 @@
     ],
 
     "permissions": [
-        "redcap_every_page_top",
+        "redcap_every_page_top"
     ],
 
     "system-settings": [
