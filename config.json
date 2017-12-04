@@ -3,7 +3,7 @@
 
     "namespace": "DCC\\Instance_marker",
 
-    "description": "A single site may have multiple instances of REDCap that need to be clearly marked. Examples include Production, Backup and Development. By pattern matching the URL to the instance a small bit of matching text will be displyaed below the REDCap logo. The tab title is also prefixed with the instance type. The module must be enabled on all projects by default in order for the instance label to appear inside projects or must be enabled on a project by project basis.",
+    "description": "Clearly differentiate instances of the REDCap. By pattern matching the URL to the instance short text will be displyaed in the upper right corner of every page. The tab title is prefixed with the instance version. The module must be enabled on all projects by default in order for the instance label to appear inside projects or must be enabled on a project by project basis.",
 
     "authors": [
         {
