@@ -7,7 +7,7 @@
  * Time: 12:04 PM
  */
 
-namespace DCC\Instance_marker;
+namespace DCC\Instance_tagger;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
@@ -23,13 +23,11 @@ use ExternalModules\ExternalModules;
  * Note: The live/production instance of REDCap should remain unmarked.
  * 
  */
-class Instance_marker extends \ExternalModules\AbstractExternalModule {
+class Instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     private $logo_selector;
-    private $logo_size;
-    private $logo_size_name;
-    private $offset_left;
     private $offset_top;
+    private $offset_right;
     private $instance;
     private $instance_url;
     private $instance_color;
@@ -41,7 +39,7 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
     public function init() {
 
         $this->set_instance_url();
-        $this->set_logo_size();
+        $this->set_location();
         $this->select_instance();
         $this->instance_color();
         $this->set_debug_js();
@@ -61,59 +59,21 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
         if (($this->other_text === '') || (is_null($this->other_text))) {
             $this->other_text = 'Other';
         }
+        $this->offset_top = (int) AbstractExternalModule::getSystemSetting('offset_top');
+        $this->offset_right = (int) AbstractExternalModule::getSystemSetting('offset_right');
     }
 
-    private function clean_other_text($other_text) {
-        return htmlspecialchars(strip_tags($other_text));
-    }
-
-    /*
-     * REDCap logos vary in size depending on the page
-     * Sets the logo size and coordinates of the text
-     */
-
-    private function set_logo_size() {
-        $this->logo_size = 'small';
-        switch (PAGE) {
-            case "redcap/index.php":
-            case "index.php":
-            case "redcap/external_modules/manager/control_center.php":
-            case "ProjectSetup/index.php":
-            case "Calendar/index.php":
-            case "DataExport/index.php":
-            case "Logging/index.php":
-            case "DataQuality/field_comment_log.php":
-            case "UserRights/index.php":
-            case "DataAccessGroups/index.php":
-            case "Locking/locking_customization.php":
-            case "Locking/esign_locking_management.php":
-            case "DataQuality/index.php":
-            case "API/project_api.php":
-            case "API/playground.php":
-            case "MobileApp/index.php":
-            case "ExternalModules/manager/project.php":
-            case "redcap8.0.2/redcap_v8.0.2/ExternalModules/manager/project.php":
-                $this->logo_size = 'medium';
-                break;
+    private function set_location() {
+        if ($this->offset_top <= 0 || $this->offset_top > 2000) {
+            $this->offset_top = "45";
         }
-
-        if ($this->logo_size === 'small') {
-            $this->logo_selector = "#project-menu-logo a";
-            $this->offset_top = "36";
-            $this->offset_left = "18";
-        } else if ($this->logo_size === 'medium') {
-            $this->logo_selector = "a.navbar-brand";
-            $this->offset_top = "42";
-            $this->offset_left = "64";
-        } else {
-// Do not change logo
+        if ($this->offset_right <= 0 || $this->offset_right > 2000) {
+            $this->offset_right = "18";
         }
     }
 
     /*
      * The instance is based on mathcing a portion of the Base URL.
-     * Sets the instance type, display text and other text as applicable
-     * Sets selected if the URL is matched.
      */
 
     private function select_instance() {
@@ -172,10 +132,6 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
         }
     }
 
-    /*
-     * Add the javascript to the top of every REDCap page
-     */
-
     public function set_debug_mode($mode) {
         $this->debug_mode = $mode;
     }
@@ -185,24 +141,18 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
     }
 
     private function construct_js() {
-//                'right:' . $this->offset_left . 'px;' .
-                'top:' . $this->offset_top . 'px; ' .
         $css_styles = '.instance-type {' .
                 'position:fixed;' .
-                'top: 36px; ' .
-                'right: 10px;' .
+                'top: ' . $this->offset_top . 'px; ' .
+                'right: ' . $this->offset_right . 'px;' .
                 'background-color:' . $this->instance_color . ';' . 'font-weight:bold;' .
                 'font-style:italic;' .
                 'z-index:1040;' .
                 'color: white;' .
-    'border-radius: 2px;' .
-    'padding: 5px;' .
+                'border-radius: 2px;' .
+                'padding: 5px;' .
                 '}';
-//        if ($this->logo_size === 'medium') {
-//            $css_styles .= '@media screen and (max-width: 767px) {' .
-//                    '.instance-type{top:36px; left:18px;}' .
-//                    '}';
-//        }
+
 
         $style_sheet = '<style type="text/css">' . $css_styles . '</style>';
 
@@ -226,14 +176,14 @@ class Instance_marker extends \ExternalModules\AbstractExternalModule {
     private function set_debug_js() {
         $this->debug_js = '<script>' .
                 '$(document).ready(function(){' . PHP_EOL .
-                'console.log("Instance Marker ran"); ' .
+                'console.log("Instance Tagger ran"); ' .
                 'console.log("' . 'top:' . $this->offset_top . 'px; ' . '"); ' .
-                'console.log("' . 'left:' . $this->offset_left . 'px;' . '"); ' .
+                'console.log("' . 'right:' . $this->offset_right . 'px;' . '"); ' .
                 'console.log("' . 'color:' . $this->instance_color . '"); ' .
                 'console.log("' . 'text:' . $this->display_text . '"); ' .
                 'h = $("img[alt=\'REDCap\']").height();' .
                 'w = $("img[alt=\'REDCap\']").width();' .
-                'console.log("Height: " + h + " Width: " + w); ' .                
+                'console.log("Height: " + h + " Width: " + w); ' .
                 '});' . PHP_EOL .
                 '</script>';
     }

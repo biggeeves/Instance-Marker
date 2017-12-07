@@ -1,7 +1,7 @@
 {
-    "name": "Instance Marker",
+    "name": "Redcap Instance_Tagger",
 
-    "namespace": "DCC\\Instance_marker",
+    "namespace": "DCC\\Instance_tagger",
 
     "description": "Clearly differentiate REDCap instances. A short text describing the REDCap instance is dispalyed in the upper right corener of every page, and every project page (if enabled). The URL is mapped to instances such as 'Localhost', 'Development', 'Testing', and 'Backup'. The tab title is prefixed with the text for the specific instance. The module must be enabled on all projects by default in order for the instance label to appear inside projects or enabled on a project by project basis.",
 
@@ -57,6 +57,18 @@
         {
             "key": "other_text",
             "name": "Custom Text to display for 'Other URL'",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "offset_top",
+            "name": "Location (fixed): Pixels from the TOP of the page.",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "offset_right",
+            "name": "Location (fixed): Pixels from the RIGHT of the page.",
             "required": false,
             "type": "text"
         }
