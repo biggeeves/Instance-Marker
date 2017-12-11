@@ -5,4 +5,4 @@
 <p>The goal is to easily identify which instance of REDCap you are currently in.</p>
 
 <p>The marker can be placed anywhere on the screen.  The marker is fixed in that position. The image below is an example of how the marker will look when fixed to the bottom, left and right of the window. The opacity can be set.  The image below has opacity set to 80 (on a scale of 0 to 100).</p>
-<img src="images/instance_tagger_screen_shot.gif">
+<img src="https://github.com/biggeeves/Instance-Marker/blob/master/images/instance_tagger_screen_shot.gif">
