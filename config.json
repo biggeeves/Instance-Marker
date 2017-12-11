@@ -62,13 +62,49 @@
         },
         {
             "key": "offset_top",
-            "name": "Location (fixed): Pixels from the TOP of the page.",
+            "name": "Location (fixed): Pixels from the TOP of the page. Leave blank for default",
             "required": false,
             "type": "text"
         },
         {
             "key": "offset_right",
-            "name": "Location (fixed): Pixels from the RIGHT of the page.",
+            "name": "Location (fixed): Pixels from the RIGHT of the page. Leave blank for default",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "offset_bottom",
+            "name": "Location (fixed): Pixels from the BOTTOM of the page. Leave blank for default",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "offset_left",
+            "name": "Location (fixed): Pixels from the LEFT of the page. Leave blank for default",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "width",
+            "name": "Width of the marker in pixels. Min: 15, Max: 1000. Leave blank for default",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "height",
+            "name": "Height of the marker in pixels. Min: 15 Max: 800. Leave blank for default",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "bk_color",
+            "name": "Background color. Specify HTML color code or leave blank to use default colors.",
+            "required": false,
+            "type": "text"
+        },
+        {
+            "key": "opacity",
+            "name": "Opacity %: Min: 0, Max: 100.",
             "required": false,
             "type": "text"
         }

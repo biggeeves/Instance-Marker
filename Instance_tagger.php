@@ -25,12 +25,14 @@ use ExternalModules\ExternalModules;
  */
 class Instance_tagger extends \ExternalModules\AbstractExternalModule {
 
-    private $logo_selector;
     private $offset_top;
     private $offset_right;
+    private $offset_bottom;
+    private $offset_left;
+    private $opacity;
     private $instance;
     private $instance_url;
-    private $instance_color;
+    private $bk_color;
     private $selected;
     private $other_text;
     private $debug_js;
@@ -38,16 +40,19 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     public function init() {
 
-        $this->set_instance_url();
+        $this->get_settings();
+        $this->set_other_text();
         $this->set_location();
+        $this->set_height_width();
         $this->select_instance();
-        $this->instance_color();
+        $this->set_bk_color();
+        $this->set_opacity();
         $this->set_debug_js();
         $this->construct_js();
     }
 
-    private function set_instance_url() {
-
+    // Get stored settings
+    private function get_settings() {
         $this->instance_url['localhost'] = AbstractExternalModule::getSystemSetting('localhost_url');
         $this->instance_url['development'] = AbstractExternalModule::getSystemSetting('development_url');
         $this->instance_url['testing'] = AbstractExternalModule::getSystemSetting('testing_url');
@@ -56,24 +61,84 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
         $this->instance_url['other'] = AbstractExternalModule::getSystemSetting('other_url');
         $this->other_text = AbstractExternalModule::getSystemSetting('other_text');
         $this->other_text = htmlspecialchars(strip_tags($this->other_text));
-        if (($this->other_text === '') || (is_null($this->other_text))) {
-            $this->other_text = 'Other';
-        }
-        $this->offset_top = (int) AbstractExternalModule::getSystemSetting('offset_top');
-        $this->offset_right = (int) AbstractExternalModule::getSystemSetting('offset_right');
+        $this->offset_top = AbstractExternalModule::getSystemSetting('offset_top');
+        $this->offset_right = AbstractExternalModule::getSystemSetting('offset_right');
+        $this->offset_bottom = AbstractExternalModule::getSystemSetting('offset_bottom');
+        $this->offset_left = AbstractExternalModule::getSystemSetting('offset_left');
+        $this->height = (int) AbstractExternalModule::getSystemSetting('height');
+        $this->width = (int) AbstractExternalModule::getSystemSetting('width');
+        $this->bk_color = AbstractExternalModule::getSystemSetting('bk_color');
+        $this->bk_color = htmlspecialchars(strip_tags($this->bk_color));
+        $this->opacity = (int) AbstractExternalModule::getSystemSetting('opacity');
     }
 
-    private function set_location() {
-        if ($this->offset_top <= 0 || $this->offset_top > 2000) {
-            $this->offset_top = "45";
-        }
-        if ($this->offset_right <= 0 || $this->offset_right > 2000) {
-            $this->offset_right = "18";
+    // Set other text to default "Other" if blank.
+    private function set_other_text() {
+        if (($this->other_text === '') || (is_null($this->other_text))) {
+            $this->other_text = 'Other';
         }
     }
 
     /*
-     * The instance is based on mathcing a portion of the Base URL.
+     * Set location of top, right, left, and bottom fixed points
+     */
+
+    private function set_location() {
+        if (!is_null($this_top)) {
+            if ($this->offset_top <= 0 || $this->offset_top > 2000) {
+                $this->offset_top = 45;
+            }
+        }
+        if (!is_null($this_right)) {
+            if ($this->offset_right <= 0 || $this->offset_right > 2000) {
+                $this->offset_right = 18;
+            }
+        }
+        if (!is_null($this_bottom)) {
+            if ($this->offset_bottom <= 0 || $this->offset_bottom > 2000) {
+                $this->offset_bottom = 45;
+            }
+        }
+        if (!is_null($this_left)) {
+            if ($this->offset_left <= 0 || $this->offset_left > 2000) {
+                $this->offset_left = 18;
+            }
+        }
+    }
+
+    /*
+     * Set the opacity of the marker. 
+     */
+
+    private function set_opacity() {
+        if ($this->opacity <= 0 || $this->offset_top >= 100) {
+            $this->opacity = 1;
+        } else {
+            $this->opacity = $this->opacity / 100;
+        }
+    }
+
+    /*
+     * Set Height and width of marker
+     */
+
+    private function set_height_width() {
+        if ($this->width <= 15 || $this->width > 1000) {
+            $this->width = "";
+        } else {
+            $this->width .= "px";
+        }
+        if ($this->height <= 15 || $this->height > 800) {
+            $this->height = "";
+        } else {
+            $this->height .= "px";
+        }
+    }
+
+    /*
+     * Compare Base URL to Instance URLs in settings.
+     * Select the marker and text to be displayed
+     * 
      */
 
     private function select_instance() {
@@ -104,32 +169,35 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
     }
 
     /*
-     * Instances are also indicated by color.
-     * Sets specific color based on instance
+     * Set background color based on instance if it was not specified
      */
 
-    private function instance_color() {
-        $this->instance_color = '#000000';
-        switch ($this->instance) {
-            case 'localhost':
-                $this->instance_color = '#449d44';  // Green
-                break;
-            case 'development':
-                $this->instance_color = '#286090';  // Blue
-                break;
-            case 'testing':
-                $this->instance_color = '#835C3B';  // Brown
-                break;
-            case 'backup':
-                $this->instance_color = '#DD3236';  // Redish
-                break;
-            case 'staging':
-                $this->instance_color = '#BA9215'; //  Goldish
-                break;
-            case 'other':
-                $this->instance_color = '#f0ad4e'; // Orange
-                break;
+    private function set_bk_color() {
+
+        if (is_null($this->bk_color) || $this->bk_color == "") {
+            $this->bk_color = '#000000';
+            switch ($this->instance) {
+                case 'localhost':
+                    $this->bk_color = '#449d44';  // Green
+                    break;
+                case 'development':
+                    $this->bk_color = '#286090';  // Blue
+                    break;
+                case 'testing':
+                    $this->bk_color = '#835C3B';  // Brown
+                    break;
+                case 'backup':
+                    $this->bk_color = '#DD3236';  // Redish
+                    break;
+                case 'staging':
+                    $this->bk_color = '#BA9215'; //  Goldish
+                    break;
+                case 'other':
+                    $this->bk_color = '#f0ad4e'; // Orange
+                    break;
+            }
         }
+
     }
 
     public function set_debug_mode($mode) {
@@ -140,17 +208,28 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
         return $this->debug_mode;
     }
 
+    /*
+     * Output value to console for easier debugging.
+     */
+
     private function construct_js() {
         $css_styles = '.instance-type {' .
                 'position:fixed;' .
                 'top: ' . $this->offset_top . 'px; ' .
                 'right: ' . $this->offset_right . 'px;' .
-                'background-color:' . $this->instance_color . ';' . 'font-weight:bold;' .
+                'bottom: ' . $this->offset_bottom . 'px;' .
+                'left: ' . $this->offset_left . 'px;' .
+                'color: ' . $this->color . ';' .
+                'opacity: ' . $this->opacity . ';' .
+                'height: ' . $this->height . ';' .
+                'width: ' . $this->width . ';' .
+                'background-color:' . $this->bk_color . ';' . 'font-weight:bold;' .
                 'font-style:italic;' .
                 'z-index:1040;' .
                 'color: white;' .
                 'border-radius: 2px;' .
                 'padding: 5px;' .
+                'text-align: center;' .
                 '}';
 
 
@@ -173,13 +252,22 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
                 '</script>';
     }
 
+    /*
+     * Construct debug information displayed in console window.
+     */
+
     private function set_debug_js() {
         $this->debug_js = '<script>' .
                 '$(document).ready(function(){' . PHP_EOL .
                 'console.log("Instance Tagger ran"); ' .
                 'console.log("' . 'top:' . $this->offset_top . 'px; ' . '"); ' .
                 'console.log("' . 'right:' . $this->offset_right . 'px;' . '"); ' .
-                'console.log("' . 'color:' . $this->instance_color . '"); ' .
+                'console.log("' . 'bottom:' . $this->offset_bottom . 'px; ' . '"); ' .
+                'console.log("' . 'left:' . $this->offset_left . 'px;' . '"); ' .
+                'console.log("' . 'color:' . $this->bk_color . '"); ' .
+                'console.log("' . 'opacity:' . $this->opacity . '"); ' .
+                'console.log("' . 'height:' . $this->height . '"); ' .
+                'console.log("' . 'width:' . $this->width . '"); ' .
                 'console.log("' . 'text:' . $this->display_text . '"); ' .
                 'h = $("img[alt=\'REDCap\']").height();' .
                 'w = $("img[alt=\'REDCap\']").width();' .
