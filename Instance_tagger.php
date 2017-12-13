@@ -36,11 +36,12 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
     private $selected;
     private $other_text;
     private $debug_js;
-    private $debug_mode = false;
+    private $debug_mode = 1;
 
     public function init() {
 
         $this->get_settings();
+        $this->clean_urls();
         $this->set_other_text();
         $this->set_location();
         $this->set_height_width();
@@ -76,6 +77,17 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
     private function set_other_text() {
         if (($this->other_text === '') || (is_null($this->other_text))) {
             $this->other_text = 'Other';
+        }
+    }
+
+    /*
+     * remove http: and https: from user defined urls
+     */
+
+    private function clean_urls() {
+        foreach ($this->instance_url as $key => $value) {
+            $this->instance_url[$key] = str_replace("https:", "", $value);
+            $this->instance_url[$key] = str_replace("http:", "", $value);
         }
     }
 
@@ -143,9 +155,37 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
 
     private function select_instance() {
         $this->selected = 0;
-        foreach ($this->instance_url as $key => $value) {
-            if (strpos(APP_PATH_WEBROOT_FULL, $value) !== false) {
+        echo '<hr><hr><hr><hr>';
+        $test_url = '//192.168.1.69:8080/redcap8.0.2/';
+        echo 'test url: ' . $test_url . '<br>';
+        echo 'APP_PATH_WEBROOT_FULL: ' . APP_PATH_WEBROOT_FULL . '<br>';
+        echo '<p>With variable test.</p>';
+        $webroot_A = str_replace('/', '\/', $test_url);
+        echo 'webroot_A 1: ' . $webroot_A . '<br>';
+        $webroot_A = str_replace("https:", "", $webroot_A);
+        echo 'webroot_A 2: ' . $webroot_A . '<br>';
+        $webroot_A = str_replace("http:", "", $webroot_A);
+        echo 'webroot_A 3: ' . $webroot_A . '<br>';
+        
+        echo '<hr><p>With APP_PATH_WEBROOT_FULL</p>';
+        echo 'APP_PATH_WEBROOT_FULL: ' . APP_PATH_WEBROOT_FULL . '<br>';
+        $webroot_B = str_replace('/', '\/', APP_PATH_WEBROOT_FULL);
+        echo 'webroot_B 1: ' . $webroot_B . '<br>';
+        $webroot_B = str_replace("https:", "", $webroot_B);
+        echo 'webroot_B 2: ' . $webroot_B . '<br>';
+        $webroot_B = str_replace("http:", "", $webroot_B);
+        echo 'webroot_B 3:' . $webroot_B . '<br>';
+        echo '<hr><p>test completed</p>';
+        
+        $webroot = $webroot_A;
 
+
+        foreach ($this->instance_url as $key => $value) {
+            $mod_url = str_replace('/', '\/', $value);
+            echo 'strpos: ' . strpos($webroot, $mod_url) . '<br>' .
+            'webroot:: ' . $webroot . '<br>' .
+            'mode_url: ' . $mod_url . '<hr>';
+            if (strpos($webroot, $mod_url) !== false) {
                 $this->instance = $key;
                 $this->display_text = ucfirst($key);
                 $this->selected = 1;
@@ -197,7 +237,6 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
                     break;
             }
         }
-
     }
 
     public function set_debug_mode($mode) {
@@ -260,18 +299,23 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule {
         $this->debug_js = '<script>' .
                 '$(document).ready(function(){' . PHP_EOL .
                 'console.log("Instance Tagger ran"); ' .
-                'console.log("' . 'top:' . $this->offset_top . 'px; ' . '"); ' .
-                'console.log("' . 'right:' . $this->offset_right . 'px;' . '"); ' .
-                'console.log("' . 'bottom:' . $this->offset_bottom . 'px; ' . '"); ' .
-                'console.log("' . 'left:' . $this->offset_left . 'px;' . '"); ' .
-                'console.log("' . 'color:' . $this->bk_color . '"); ' .
-                'console.log("' . 'opacity:' . $this->opacity . '"); ' .
-                'console.log("' . 'height:' . $this->height . '"); ' .
-                'console.log("' . 'width:' . $this->width . '"); ' .
-                'console.log("' . 'text:' . $this->display_text . '"); ' .
-                'h = $("img[alt=\'REDCap\']").height();' .
-                'w = $("img[alt=\'REDCap\']").width();' .
-                'console.log("Height: " + h + " Width: " + w); ' .
+                'console.log("top: ' . $this->offset_top . 'px; ' . '"); ' .
+                'console.log("right: ' . $this->offset_right . 'px;' . '"); ' .
+                'console.log("bottom: ' . $this->offset_bottom . 'px; ' . '"); ' .
+                'console.log("left: ' . $this->offset_left . 'px;' . '"); ' .
+                'console.log("color: ' . $this->bk_color . '"); ' .
+                'console.log("opacity: ' . $this->opacity . '"); ' .
+                'console.log("height: ' . $this->height . '"); ' .
+                'console.log("width: ' . $this->width . '"); ' .
+                'console.log("text: ' . $this->display_text . '"); ' .
+                'console.log("APP_PATH_WEBROOT_FULL: ' . APP_PATH_WEBROOT_FULL . '"); ' .
+                'console.log("localhost: ' . $this->instance_url['localhost'] . '"); ' .
+                'console.log("development: ' . $this->instance_url['development'] . '"); ' .
+                'console.log("testing: ' . $this->instance_url['testing'] . '"); ' .
+                'console.log("backup: ' . $this->instance_url['backup'] . '"); ' .
+                'console.log("staging: ' . $this->instance_url['staging'] . '"); ' .
+                'console.log("other: ' . $this->instance_url['other'] . '"); ' .
+                'console.log("Selected: ' . $this->instance . '"); ' .
                 '});' . PHP_EOL .
                 '</script>';
     }
