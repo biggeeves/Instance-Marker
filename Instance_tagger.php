@@ -48,7 +48,7 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
     /**
      *
      */
-    public function init()
+    public function init_tagger()
     {
 
         $this->get_settings();
@@ -205,7 +205,7 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
      */
     public function redcap_every_page_top($project_id)
     {
-        $this->init();
+        $this->init_tagger();
         if ($this->selected === 1) {
             echo $this->js;
         }
