@@ -205,6 +205,9 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
      */
     public function redcap_every_page_top($project_id)
     {
+        if ($this->getSystemSetting('display_on_projects_only') && !isset($project_id)) {
+            return;
+        }
         $this->init_tagger();
         if ($this->selected === 1) {
             echo $this->js;

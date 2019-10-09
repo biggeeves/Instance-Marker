@@ -15,6 +15,12 @@
   "enable-every-page-hooks-on-system-pages": true,
   "system-settings": [
     {
+      "key": "display_on_projects_only",
+      "name": "Display only in projects? (Default is system wide)",
+      "required": false,
+      "type": "checkbox"
+    },
+    {
       "key": "localhost_url",
       "name": "Localhost URL",
       "required": false,
