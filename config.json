@@ -16,7 +16,7 @@
   "system-settings": [
     {
       "key": "display_on_projects_only",
-      "name": "Display only in projects? (Default is system wide)",
+      "name": "Display only in projects? (Default is system wide and on enabled projects)",
       "required": false,
       "type": "checkbox"
     },
