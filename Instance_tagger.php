@@ -75,7 +75,7 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
         $this->instance_url['staging'] = AbstractExternalModule::getSystemSetting('staging_url');
         $this->instance_url['other'] = AbstractExternalModule::getSystemSetting('other_url');
         $this->other_text = AbstractExternalModule::getSystemSetting('other_text');
-        $this->other_text = htmlspecialchars(strip_tags($this->other_text));
+        $this->other_text = (!is_null($this->other_text) ? htmlspecialchars(strip_tags($this->other_text)) : '');
         $this->offset_top = AbstractExternalModule::getSystemSetting('offset_top');
         $this->offset_right = AbstractExternalModule::getSystemSetting('offset_right');
         $this->offset_bottom = AbstractExternalModule::getSystemSetting('offset_bottom');
@@ -184,7 +184,7 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
     {
         $this->selected = 0;
         foreach ($this->instance_url as $key => $value) {
-            if (strpos(APP_PATH_WEBROOT_FULL, $value) !== false) {
+            if (!is_null($value) && strpos(APP_PATH_WEBROOT_FULL, $value) !== false) {
 
                 $this->instance = $key;
                 $this->display_text = ucfirst($key);
