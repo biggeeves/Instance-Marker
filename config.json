@@ -9,6 +9,7 @@
       "institution": "Columbia University"
     }
   ],
+  "framework-version": 9,
   "permissions": [
     "redcap_every_page_top"
   ],
