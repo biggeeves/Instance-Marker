@@ -201,9 +201,9 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
      * Add css and js to every page
      * if in debug mode add debug script
      *
-     * @param int $project_id
+     * @param int|null $project_id
      */
-    public function redcap_every_page_top(int $project_id)
+    public function redcap_every_page_top(?int $project_id)
     {
         $this->init_tagger();
         if ($this->selected === 1) {
