@@ -84,7 +84,7 @@ class Instance_tagger extends \ExternalModules\AbstractExternalModule
         $this->width_pixels = AbstractExternalModule::getSystemSetting('width');
         $this->width_percent = AbstractExternalModule::getSystemSetting('width_percent');
         $this->bk_color = AbstractExternalModule::getSystemSetting('bk_color');
-        $this->bk_color = htmlspecialchars(strip_tags($this->bk_color));
+        $this->bk_color = (!is_null($this->bk_color) ? htmlspecialchars(strip_tags($this->bk_color)) : '');
         $this->opacity = AbstractExternalModule::getSystemSetting('opacity');
     }
 
